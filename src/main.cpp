@@ -2,6 +2,8 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "shaderToolCLass/shader.h"
+#include "ImageReader/stb_image.h"
+
 void PrcocessInput(GLFWwindow* window);
 
 int main()
@@ -44,6 +46,10 @@ int main()
 		0, 1, 2,
 		0, 1, 3
 	};
+
+	int width, height, nrChannerls;
+	unsigned char* data = stbi_load("res/images/container.jpg", &width, &height, &nrChannerls, 0);
+
 
 	Shader program("res/shaders/basic.shader");
 	program.Use();

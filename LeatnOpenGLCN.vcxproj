@@ -152,12 +152,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\ImageReader\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shaderToolCLass\shader.h" />
+    <ClInclude Include="src\ImageReader\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\images\container.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
