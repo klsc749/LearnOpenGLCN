@@ -3,6 +3,9 @@
 #include <GLFW/glfw3.h>
 #include "shaderToolCLass/shader.h"
 #include "ImageReader/stb_image.h"
+#include "../Dependencies/glm/glm.hpp"
+#include "../Dependencies/glm/gtc/matrix_transform.hpp"
+#include "../Dependencies/glm/gtc/type_ptr.hpp"
 
 void PrcocessInput(GLFWwindow* window);
 
@@ -17,7 +20,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	window = glfwCreateWindow(1200, 900, "Hello OpenGL", NULL, NULL);
+	window = glfwCreateWindow(900, 900, "Hello OpenGL", NULL, NULL);
 	glfwSwapInterval(2);
 
 	if (!window)
@@ -85,11 +88,10 @@ int main()
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	int width1, height1, nrChannerls1;
-	unsigned char* data1 = stbi_load("res/images/2.png", &width1, &height1, &nrChannerls1, 0);
-	if (data1)
+	data = stbi_load("res/images/awesomeface.png", &width, &height, &nrChannerls, 0);
+	if (data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width1, height1, 0, GL_RGBA, GL_UNSIGNED_BYTE, data1);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}
 	else
@@ -98,7 +100,7 @@ int main()
 	}
 
 
-	stbi_image_free(data1);
+	stbi_image_free(data);
 
 
 
@@ -128,8 +130,25 @@ int main()
 	program.SetInt("texture1", 0);
 	program.SetInt("texture2", 1);
 
-	float increment = 0.05f;
-	float mixVal = 0;
+	glm::mat4 model = glm::mat4(1.0f);
+	model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+
+	glm::mat4 view = glm::mat4(1.0f);
+	// 注意，我们将矩阵向我们要进行移动场景的反方向移动。
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+	glm::mat4 projection;
+	projection = glm::perspective(glm::radians(45.0f), 900.0f / 900.0f, 0.1f, 100.0f);
+
+
+	int modelLoc = glGetUniformLocation(program.id, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
+
+	int viewLoc = glGetUniformLocation(program.id, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+	int projectionLoc = glGetUniformLocation(program.id, "projection");
+	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 	while (!glfwWindowShouldClose(window))
 	{
@@ -140,13 +159,6 @@ int main()
 		//处理输入
 		PrcocessInput(window);
 		
-		if (mixVal > 1)
-			increment = -0.02f;
-		else if(mixVal < 0)
-			increment = 0.02f;
-
-		mixVal += increment;
-		program.SetFloat("mixVal", mixVal);
 
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
