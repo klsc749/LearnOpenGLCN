@@ -86,9 +86,10 @@ float vertices[] = {
 		1, 2, 3
 	};
 
-
+	//翻转图像
 	stbi_set_flip_vertically_on_load(true);
 
+	//设置纹理
 	unsigned int texture;
 	glGenTextures(1, &texture);
 	glActiveTexture(GL_TEXTURE0);
@@ -167,6 +168,7 @@ float vertices[] = {
 
 	glEnable(GL_DEPTH_TEST);
 
+	//立方体的位置
 	glm::vec3 cubePositions[] = {
 		  glm::vec3(0.0f,  0.0f,  0.0f),
 		  glm::vec3(2.0f,  5.0f, -15.0f),
@@ -179,6 +181,20 @@ float vertices[] = {
 		  glm::vec3(1.5f,  0.2f, -1.5f),
 		  glm::vec3(-1.3f,  1.0f, -1.5f)
 	};
+
+
+
+	glm::mat4 view = glm::mat4(1.0f);
+	glm::mat4 projection = glm::mat4(1.0f);
+	//视口变换
+	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+	//投影变换
+	projection = glm::perspective(glm::radians(45.0f), (float)600 / (float)600, 0.1f, 100.0f);
+	//设置着色器中的Uniform变量
+	unsigned int viewLoc = glGetUniformLocation(program.id, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(program.id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+
 	while (!glfwWindowShouldClose(window))
 	{
 		//清理缓冲区
@@ -188,21 +204,6 @@ float vertices[] = {
 		//处理输入
 		PrcocessInput(window);
 		
-		// create transformations
-		glm::mat4 model = glm::mat4(1.0f); // make sure to initialize matrix to identity matrix first
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-		model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		projection = glm::perspective(glm::radians(45.0f), (float)600 / (float)600, 0.1f, 100.0f);
-		// retrieve the matrix uniform locations
-		unsigned int modelLoc = glGetUniformLocation(program.id, "model");
-		unsigned int viewLoc = glGetUniformLocation(program.id, "view");
-		// pass them to the shaders (3 different ways)
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-		glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
-		// note: currently we set the projection matrix each frame, but since the projection matrix rarely changes it's often best practice to set it outside the main loop only once.
-		glUniformMatrix4fv(glGetUniformLocation(program.id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
 
 		// render box
 		glBindVertexArray(vao);

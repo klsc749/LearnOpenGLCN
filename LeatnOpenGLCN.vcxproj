@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ImageReader\stb_image.cpp" />
+    <ClCompile Include="src\shaderToolCLass\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shaderToolCLass\shader.h" />
