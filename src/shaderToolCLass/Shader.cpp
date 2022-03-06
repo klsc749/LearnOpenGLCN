@@ -43,6 +43,11 @@ void Shader::SetFloat(const std::string& name, float value) const
 	glUniform1f(glGetUniformLocation(id, name.c_str()), value);
 }
 
+void Shader::SetMat4f(const std::string& name, glm::mat4& mat4) const
+{
+	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, &mat4[0][0]);
+}
+
 Shader::_ShaderProgramSource Shader::ParseShader(const char* path)
 {
 	std::ifstream stream(path);

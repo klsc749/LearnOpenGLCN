@@ -2,6 +2,7 @@
 #define SHADER_H
 
 #include <string>
+#include "../../Dependencies/glm/glm.hpp"
 
 class Shader {
 	//³ÌÐò£¨shaderProgram£©µÄid
@@ -17,6 +18,8 @@ public :
 
 	void SetFloat(const std::string& name, float value) const;
 
+	void SetMat4f(const std::string& name, glm::mat4& mat4) const;
+	 
 private:
 	struct _ShaderProgramSource
 	{
