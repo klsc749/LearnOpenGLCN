@@ -6,11 +6,15 @@
 
 class Shader {
 	//³ÌÐò£¨shaderProgram£©µÄid
+private:
+	unsigned int m_id;
 public :
-	unsigned int id;
+	
 	Shader(const char* shaderPath);
 
-	void Use();
+	void Bind() const;
+
+	void UnBind() const;
 
 	void SetBool(const std::string& name, bool value) const;
 

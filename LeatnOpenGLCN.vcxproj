@@ -153,11 +153,22 @@
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ImageReader\stb_image.cpp" />
+    <ClCompile Include="src\shaderToolCLass\IndexBuffer.cpp" />
+    <ClCompile Include="src\shaderToolCLass\Renderer.cpp" />
     <ClCompile Include="src\shaderToolCLass\Shader.cpp" />
+    <ClCompile Include="src\shaderToolCLass\Texture.cpp" />
+    <ClCompile Include="src\shaderToolCLass\VertexArray.cpp" />
+    <ClCompile Include="src\shaderToolCLass\VertexBuffer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\shaderToolCLass\IndexBuffer.h" />
+    <ClInclude Include="src\shaderToolCLass\Renderer.h" />
     <ClInclude Include="src\shaderToolCLass\shader.h" />
     <ClInclude Include="src\ImageReader\stb_image.h" />
+    <ClInclude Include="src\shaderToolCLass\Texture.h" />
+    <ClInclude Include="src\shaderToolCLass\VertexArray.h" />
+    <ClInclude Include="src\shaderToolCLass\VertexBuffer.h" />
+    <ClInclude Include="src\shaderToolCLass\VertexBufferLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />

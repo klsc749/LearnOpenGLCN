@@ -20,32 +20,37 @@ Shader::Shader(const char* shaderPath)
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
-	id = program;
+	m_id = program;
 }
 
-void Shader::Use()
+void Shader::Bind() const
 {
-	glUseProgram(id);
+	glUseProgram(m_id);
+}
+
+void Shader::UnBind() const
+{
+	glUseProgram(0);
 }
 
 void Shader::SetBool(const std::string& name, bool value) const
 {
-	glUniform1i(glGetUniformLocation(id, name.c_str()), (int)value);
+	glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
 }
 
 void Shader::SetInt(const std::string& name, int value) const
 {
-	glUniform1i(glGetUniformLocation(id, name.c_str()), value);
+	glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::SetFloat(const std::string& name, float value) const
 {
-	glUniform1f(glGetUniformLocation(id, name.c_str()), value);
+	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
 }
 
 void Shader::SetMat4f(const std::string& name, glm::mat4& mat4) const
 {
-	glUniformMatrix4fv(glGetUniformLocation(id, name.c_str()), 1, GL_FALSE, &mat4[0][0]);
+	glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat4[0][0]);
 }
 
 Shader::_ShaderProgramSource Shader::ParseShader(const char* path)

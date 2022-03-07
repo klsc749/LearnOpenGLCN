@@ -6,6 +6,8 @@
 #include "../Dependencies/glm/glm.hpp"
 #include "../Dependencies/glm/gtc/matrix_transform.hpp"
 #include "../Dependencies/glm/gtc/type_ptr.hpp"
+#include "shaderToolCLass/Renderer.h"
+#include "shaderToolCLass/VertexBufferLayout.h"
 
 void PrcocessInput(GLFWwindow* window);
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -60,206 +62,165 @@ int main()
 		return -1;
 	}
 
-float vertices[] = {
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+	float vertices[] = {
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
 
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
 
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
 
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
 
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-};
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+	};
 
 	unsigned int indices[] = {
 		0, 1, 3,
 		1, 2, 3
 	};
 
-	//翻转图像
-	stbi_set_flip_vertically_on_load(true);
-
-	//设置纹理
-	unsigned int texture;
-	glGenTextures(1, &texture);
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	int width, height, nrChannerls;
-	unsigned char* data = stbi_load("res/images/container.jpg", &width, &height, &nrChannerls, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Fail to read image" << std::endl;
-	}
-
-
-	stbi_image_free(data);
-
-
-	unsigned int texture1;
-	glGenTextures(1, &texture1);
-	glActiveTexture(GL_TEXTURE1);
-	glBindTexture(GL_TEXTURE_2D, texture1);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	data = stbi_load("res/images/awesomeface.png", &width, &height, &nrChannerls, 0);
-	if (data)
-	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-	}
-	else
-	{
-		std::cout << "Fail to read image" << std::endl;
-	}
-
-
-	stbi_image_free(data);
-
-
-
-	unsigned int vao;
-	glGenVertexArrays(1, &vao);
-	glBindVertexArray(vao);
-
-	unsigned int vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
-	// texture coord attribute
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-	unsigned int ibo;
-	glGenBuffers(1, &ibo);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ibo);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 2 * 3 * sizeof(unsigned int), indices, GL_STATIC_DRAW);
-
-	Shader program("res/shaders/basic.shader");
-	program.Use();
-	program.SetInt("texture1", 0);
-	program.SetInt("texture2", 1);
-
-	glEnable(GL_DEPTH_TEST);
-
-	//立方体的位置
-	glm::vec3 cubePositions[] = {
-		  glm::vec3(0.0f,  0.0f,  0.0f),
-		  glm::vec3(2.0f,  5.0f, -15.0f),
-		  glm::vec3(-1.5f, -2.2f, -2.5f),
-		  glm::vec3(-3.8f, -2.0f, -12.3f),
-		  glm::vec3(2.4f, -0.4f, -3.5f),
-		  glm::vec3(-1.7f,  3.0f, -7.5f),
-		  glm::vec3(1.3f, -2.0f, -2.5f),
-		  glm::vec3(1.5f,  2.0f, -2.5f),
-		  glm::vec3(1.5f,  0.2f, -1.5f),
-		  glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
-
-
-
-	glm::mat4 view = glm::mat4(1.0f);
-	glm::mat4 projection = glm::mat4(1.0f);
-	//视口变换
-	view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-	//投影变换
-	
-
-	while (!glfwWindowShouldClose(window))
-	{
-		//清理缓冲区
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		//处理输入
-		PrcocessInput(window);
 		
-		projection = glm::perspective(glm::radians(fov), (float)800 / (float)600, 0.1f, 100.0f);
-		//设置着色器中的Uniform变量
-		glUniformMatrix4fv(glGetUniformLocation(program.id, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
+	{
+		GLCall(glEnable(GL_BLEND));
+		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
 
-		// camera/view transformation
-		glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
-		program.SetMat4f("view", view);
+		//翻转图像
+		stbi_set_flip_vertically_on_load(true);
 
-		// render box
-		glBindVertexArray(vao);
-		for (unsigned int i = 0; i < 10; i++)
+		//设置纹理
+		Texture texture("res/images/container.jpg", 0);
+		texture.Bind(0);
+
+		Texture texture1("res/images/awesomeface.png", 1);
+		texture1.Bind(1);
+
+		//设置顶点信息的布局
+		VertexBufferLayout layout;
+		layout.Push<float>(3);
+		layout.Push<float>(2);
+
+		//设置顶点缓冲对象
+		VertexBuffer vbo(vertices, sizeof(vertices));
+		vbo.Bind();
+
+		//设置顶点缓冲数组
+		VertexArray vao;
+		vao.AddBuffer(vbo, layout);
+
+		//设置索引缓冲数组
+		IndexBuffer ibo(indices, 6);
+		ibo.Bind();
+
+		//设置着色器程序
+		Shader program("res/shaders/basic.shader");
+		program.Bind();
+		program.SetInt("texture1", 0);
+		program.SetInt("texture2", 1);
+
+
+		glEnable(GL_DEPTH_TEST);
+
+		//立方体的位置
+		glm::vec3 cubePositions[] = {
+			  glm::vec3(0.0f,  0.0f,  0.0f),
+			  glm::vec3(2.0f,  5.0f, -15.0f),
+			  glm::vec3(-1.5f, -2.2f, -2.5f),
+			  glm::vec3(-3.8f, -2.0f, -12.3f),
+			  glm::vec3(2.4f, -0.4f, -3.5f),
+			  glm::vec3(-1.7f,  3.0f, -7.5f),
+			  glm::vec3(1.3f, -2.0f, -2.5f),
+			  glm::vec3(1.5f,  2.0f, -2.5f),
+			  glm::vec3(1.5f,  0.2f, -1.5f),
+			  glm::vec3(-1.3f,  1.0f, -1.5f)
+		};
+
+
+
+		glm::mat4 view = glm::mat4(1.0f);
+		glm::mat4 projection = glm::mat4(1.0f);
+		//视口变换
+		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+		//投影变换
+
+
+		while (!glfwWindowShouldClose(window))
 		{
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, cubePositions[i]);
-			float angle = 20.0f * i;
-			if(i % 3 == 0  || i == 0)
-				model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.3f, 0.5f));
-			else
-				model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+			//清理缓冲区
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-			glUniformMatrix4fv(glGetUniformLocation(program.id, "model"), 1, GL_FALSE, glm::value_ptr(model));
+			//处理输入
+			PrcocessInput(window);
 
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			projection = glm::perspective(glm::radians(fov), (float)800 / (float)600, 0.1f, 100.0f);
+			//设置着色器中的Uniform变量
+			program.SetMat4f("projection", projection);
+
+			// camera/view transformation
+			glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+			program.SetMat4f("view", view);
+
+			for (unsigned int i = 0; i < 10; i++)
+			{
+				glm::mat4 model = glm::mat4(1.0f);
+				model = glm::translate(model, cubePositions[i]);
+				float angle = 20.0f * i;
+				if (i % 3 == 0 || i == 0)
+					model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.3f, 0.5f));
+				else
+					model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+
+				program.SetMat4f("model", model);
+
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+			}
+
+			//双缓存交换
+			glfwSwapBuffers(window);
+
+			float currentTime = (float)glfwGetTime();
+			deltaTime = currentTime - lastTime;
+			lastTime = currentTime;
+
+			glfwPollEvents();
 		}
-
-		//双缓存交换
-		glfwSwapBuffers(window);
-
-		float currentTime = glfwGetTime();
-		deltaTime = currentTime - lastTime;
-		lastTime = currentTime;
-
-		glfwPollEvents();
 	}
 
 	glfwTerminate();
 	return 0;
+
 }
 
 void PrcocessInput(GLFWwindow* window)
