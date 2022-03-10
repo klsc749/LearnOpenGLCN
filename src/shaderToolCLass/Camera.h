@@ -31,6 +31,8 @@ public:
     float MovementSpeed;
     float MouseSensitivity;
     float Zoom;
+
+    bool enable = false;
 private:
 
 public:
