@@ -119,60 +119,33 @@ int main()
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
 
 
+		VertexArray cubeVAO;
+		VertexBufferLayout cubeLayout;
+		cubeLayout.Push<float>(3);
+		cubeLayout.Push<float>(2);
+
 		//设置纹理
 		Texture texture("res/images/container.jpg", 0);
 		texture.Bind(0);
 
-		Texture texture1("res/images/awesomeface.png", 1);
-		texture1.Bind(1);
-
-		//设置顶点信息的布局
-		VertexBufferLayout layout;
-		layout.Push<float>(3);
-		layout.Push<float>(2);
-
 		//设置顶点缓冲对象
-		VertexBuffer vbo(vertices, sizeof(vertices));
-		vbo.Bind();
+		VertexBuffer cubeVBO(vertices, sizeof(vertices));
+		cubeVAO.AddBuffer(cubeVBO, cubeLayout);
 
-		//设置顶点缓冲数组
-		VertexArray vao;
-		vao.AddBuffer(vbo, layout);
-
-		//设置索引缓冲数组
-		IndexBuffer ibo(indices, 6);
-		ibo.Bind();
 
 		//设置着色器程序
-		Shader program("res/shaders/basic.shader");
-		program.Bind();
-		program.SetInt("texture1", 0);
-		program.SetInt("texture2", 1);
+		Shader cubeProgram("res/shaders/basic.shader");
 
+
+		VertexArray lightVAO;
+		lightVAO.AddBuffer(cubeVBO, cubeLayout);
+
+		Shader lightShader("res/shaders/light.shader");
+
+
+		glm::vec3 lightColor = glm::vec3(1.0f);
 
 		glEnable(GL_DEPTH_TEST);
-
-		//立方体的位置
-		glm::vec3 cubePositions[] = {
-			  glm::vec3(0.0f,  0.0f,  0.0f),
-			  glm::vec3(2.0f,  5.0f, -15.0f),
-			  glm::vec3(-1.5f, -2.2f, -2.5f),
-			  glm::vec3(-3.8f, -2.0f, -12.3f),
-			  glm::vec3(2.4f, -0.4f, -3.5f),
-			  glm::vec3(-1.7f,  3.0f, -7.5f),
-			  glm::vec3(1.3f, -2.0f, -2.5f),
-			  glm::vec3(1.5f,  2.0f, -2.5f),
-			  glm::vec3(1.5f,  0.2f, -1.5f),
-			  glm::vec3(-1.3f,  1.0f, -1.5f)
-		};
-
-
-
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
-		//视口变换
-		view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-		//投影变换
 
 
 		// Setup Dear ImGui context
@@ -190,7 +163,7 @@ int main()
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-
+		glm::vec3 lightPos(1.0f, 0.017f, -0.148f);
 		while (!glfwWindowShouldClose(window))
 		{
 
@@ -198,35 +171,48 @@ int main()
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
 
-
-			//清理缓冲区
-			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			//处理输入
-			PrcocessInput(window);
-
-			projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-			//设置着色器中的Uniform变量
-			program.SetMat4f("projection", projection);
-
-			// camera/view transformation
-			glm::mat4 view = camera.GetViewMatrix();
-			program.SetMat4f("view", view);
-
-			for (unsigned int i = 0; i < 10; i++)
+			//opengl use
 			{
+				//清理缓冲区
+				glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+				//处理输入
+				PrcocessInput(window);
+
+				//projection transformation
+				glm::mat4 projection = glm::mat4(1.0f);
+				projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
+				
+				// camera/view transformation
+				glm::mat4 view = camera.GetViewMatrix();
+				
+				//move transformation
 				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, cubePositions[i]);
-				float angle = 20.0f * i;
-				if (i % 3 == 0 || i == 0)
-					model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(1.0f, 0.3f, 0.5f));
-				else
-					model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+				model = glm::rotate(model,glm::radians(float(45)), glm::vec3(0, 1.0f, 0.0f));
 
-				program.SetMat4f("model", model);
 
+				cubeProgram.Bind();
+				cubeProgram.SetMat4f("model", model);
+				cubeProgram.SetMat4f("projection", projection);
+				cubeProgram.SetMat4f("view", view);
+				cubeProgram.SetVec3("u_light", lightColor.x, lightColor.y, lightColor.z);
+				cubeProgram.SetInt("texture1", 0);
+				cubeVAO.Bind();
 				glDrawArrays(GL_TRIANGLES, 0, 36);
+				cubeVAO.UnBind();
+
+				model = glm::mat4(1.0f);
+				model = glm::translate(model, lightPos);
+				model = glm::scale(model, glm::vec3(0.2f));
+				lightShader.Bind();
+				lightShader.SetMat4f("model", model);
+				lightShader.SetMat4f("projection", projection);
+				lightShader.SetMat4f("view", view);
+				lightShader.SetVec3("u_light", lightColor.x, lightColor.y, lightColor.z);
+				lightVAO.Bind();
+				glDrawArrays(GL_TRIANGLES, 0, 36);
+				lightVAO.UnBind();
 			}
 
 			//imgui window
@@ -234,6 +220,8 @@ int main()
 
 				ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::ColorEdit3("light color", (float*)&lightColor);
+				ImGui::SliderFloat3("light positin", (float*)&lightPos, -1.0f, 1.0f);
 				ImGui::End();
 			}
 
@@ -241,12 +229,12 @@ int main()
 
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
-			//双缓存交换
-			glfwSwapBuffers(window);
-
 			float currentTime = (float)glfwGetTime();
 			deltaTime = currentTime - lastTime;
 			lastTime = currentTime;
+
+			//双缓存交换
+			glfwSwapBuffers(window);
 
 			glfwPollEvents();
 		}
@@ -281,7 +269,6 @@ void PrcocessInput(GLFWwindow* window)
 		camera.enable = false;
 	}
 
-	float cameraSpeed =2.5f * deltaTime;
 
 	if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
 		camera.ProcessKeyboard(Camera::CameraMovement::FORWARD, deltaTime);
@@ -326,6 +313,5 @@ void mouse_callback(GLFWwindow* window, double xposIn, double yposIn)
 // ----------------------------------------------------------------------
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
 {
-	if(camera.enable)
 	camera.ProcessMouseScroll(static_cast<float>(yoffset));
 }

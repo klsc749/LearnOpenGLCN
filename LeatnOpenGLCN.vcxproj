@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
+    <None Include="res\shaders\light.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\1.jpg" />
