@@ -3,6 +3,7 @@
 #include <sstream>
 #include <iostream>
 #include <GL/glew.h>
+#include "Renderer.h"
 
 Shader::Shader(const char* shaderPath)
 {
@@ -33,29 +34,44 @@ void Shader::UnBind() const
 	glUseProgram(0);
 }
 
-void Shader::SetBool(const std::string& name, bool value) const
+void Shader::SetBool(const std::string& name, bool value)
 {
-	glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);
+	glUniform1i(GetUniformLocation(name), (int)value);
 }
 
-void Shader::SetInt(const std::string& name, int value) const
+void Shader::SetInt(const std::string& name, int value)
 {
-	glUniform1i(glGetUniformLocation(m_id, name.c_str()), value);
+	glUniform1i(GetUniformLocation(name), value);
 }
 
-void Shader::SetFloat(const std::string& name, float value) const
+void Shader::SetFloat(const std::string& name, float value)
 {
-	glUniform1f(glGetUniformLocation(m_id, name.c_str()), value);
+	glUniform1f(GetUniformLocation(name), value);
 }
 
-void Shader::SetVec3(const std::string& name, float x, float y, float z) const
+void Shader::SetVec3(const std::string& name, float x, float y, float z)
 {
-	glUniform3f(glGetUniformLocation(m_id, name.c_str()), x, y, z);
+	glUniform3f(GetUniformLocation(name), x, y, z);
 }
 
-void Shader::SetMat4f(const std::string& name, glm::mat4& mat4) const
+void Shader::SetMat4f(const std::string& name, glm::mat4& mat4)
 {
-	glUniformMatrix4fv(glGetUniformLocation(m_id, name.c_str()), 1, GL_FALSE, &mat4[0][0]);
+	glUniformMatrix4fv(GetUniformLocation(name), 1, GL_FALSE, &mat4[0][0]);
+}
+
+
+int Shader::GetUniformLocation(const std::string& name)
+{
+	if (m_UniformLocationCache.find(name) != m_UniformLocationCache.end())
+		return m_UniformLocationCache[name];
+
+	GLCall(int location = glGetUniformLocation(m_id, name.c_str()));
+	if (location == -1)
+		std::cout << "[Warning] : Didn't find uniform named " << name << std::endl;
+
+	m_UniformLocationCache[name] = location;
+
+	return location;
 }
 
 Shader::_ShaderProgramSource Shader::ParseShader(const char* path)

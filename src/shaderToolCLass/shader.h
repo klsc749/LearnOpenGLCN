@@ -3,11 +3,13 @@
 
 #include <string>
 #include "../../Dependencies/glm/glm.hpp"
+#include <unordered_map>
 
 class Shader {
 	//程序（shaderProgram）的id
 private:
 	unsigned int m_id;
+	std::unordered_map<std::string, int> m_UniformLocationCache;
 public :
 	
 	Shader(const char* shaderPath);
@@ -16,15 +18,15 @@ public :
 
 	void UnBind() const;
 
-	void SetBool(const std::string& name, bool value) const;
+	void SetBool(const std::string& name, bool value);
 
-	void SetInt(const std::string& name, int value) const;
+	void SetInt(const std::string& name, int value) ;
 
-	void SetFloat(const std::string& name, float value) const;
+	void SetFloat(const std::string& name, float value);
 
-	void SetVec3(const std::string& name, float x, float y, float z) const;
+	void SetVec3(const std::string& name, float x, float y, float z);
 
-	void SetMat4f(const std::string& name, glm::mat4& mat4) const;
+	void SetMat4f(const std::string& name, glm::mat4& mat4);
 	 
 private:
 	struct _ShaderProgramSource
@@ -39,6 +41,7 @@ private:
 	/// <param name="path">着色器文件位置</param>
 	/// <returns>着色器源码</returns>
 	_ShaderProgramSource ParseShader(const char* path);
+
 	/// <summary>
 	/// 编译着色器源码
 	/// </summary>
@@ -46,6 +49,11 @@ private:
 	/// <param name="source">着色器源码</param>
 	/// <returns>着色器的id</returns>
 	unsigned int _CompileShader(unsigned int shaderType, std::string source);
+
+	/// <summary>
+	/// 
+	/// </summary>
+	int GetUniformLocation(const std::string& name);
 };
 #endif // ! SHADER_H
 
