@@ -29,6 +29,22 @@ bool firstMouse = true;
 float deltaTime = 0.0f;	// time between current frame and last frame
 float lastTime = 0.0f;
 
+struct Material
+{
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+	float shininess = 32.0f;
+};
+
+struct Light
+{
+	glm::vec3 position;
+	glm::vec3 ambient;
+	glm::vec3 diffuse;
+	glm::vec3 specular;
+};
+
 int main()
 {
 	GLFWwindow* window;
@@ -161,10 +177,20 @@ int main()
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
 		glm::vec3 lightColor = glm::vec3(1.0f);
-		glm::vec3 lightPos(1.0f, 0.017f, -0.148f);
 		glm::vec3 cubeColor(1.0f, 1.0f, 1.0f);
-		float ambientStrength = 0.1f;
-		float specularStrength = 0.5f;
+
+		Material material;
+		material.ambient = glm::vec3(1.0f, 0.5f, 0.31f);
+		material.diffuse = glm::vec3(1.0f, 0.5f, 0.31f);
+		material.specular = glm::vec3(1.0f, 0.5f, 0.5f);
+		material.shininess = 32.0f;
+
+		Light light;
+		light.ambient = glm::vec3(0.2f, 0.2f, 0.2f);
+		light.diffuse = glm::vec3(0.5f, 0.5f, 0.5f);
+		light.specular = glm::vec3(1.0f, 1.0f, 1.0f);
+		light.position = glm::vec3(1.0f, 0.017f, -0.148f);
+
 		while (!glfwWindowShouldClose(window))
 		{
 
@@ -198,11 +224,15 @@ int main()
 				cubeProgram.SetMat4f("model", model);
 				cubeProgram.SetMat4f("projection", projection);
 				cubeProgram.SetMat4f("view", view);
-				cubeProgram.SetVec3("u_light", lightColor.x, lightColor.y, lightColor.z);
 				cubeProgram.SetVec3("u_objColor", cubeColor.x, cubeColor.y, cubeColor.z);
-				cubeProgram.SetFloat("u_ambientStrength", ambientStrength);
-				cubeProgram.SetFloat("u_specularStrength", specularStrength);
-				cubeProgram.SetVec3("u_lightPos", lightPos.x, lightPos.y, lightPos.z);
+				cubeProgram.SetVec3("u_material.ambient", material.ambient.x, material.ambient.y, material.ambient.z);
+				cubeProgram.SetVec3("u_material.specular", material.specular.x, material.specular.y, material.ambient.z);
+				cubeProgram.SetVec3("u_material.diffuse", material.diffuse.x, material.diffuse.y, material.diffuse.z);
+				cubeProgram.SetFloat("u_material.shininess", material.shininess);
+				cubeProgram.SetVec3("u_light.position", light.position.x, light.position.y, light.position.z);
+				cubeProgram.SetVec3("u_light.ambient", light.ambient.x, light.ambient.y, light.ambient.z);
+				cubeProgram.SetVec3("u_light.diffuse", light.diffuse.x, light.diffuse.y, light.diffuse.z);
+				cubeProgram.SetVec3("u_light.specular", light.specular.x, light.specular.y, light.specular.z);
 				cubeProgram.SetVec3("u_viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
 				cubeVAO.Bind();
@@ -210,7 +240,7 @@ int main()
 				cubeVAO.UnBind();
 
 				model = glm::mat4(1.0f);
-				model = glm::translate(model, lightPos);
+				model = glm::translate(model, light.position);
 				model = glm::scale(model, glm::vec3(0.2f));
 				lightShader.Bind();
 				lightShader.SetMat4f("model", model);
@@ -229,9 +259,11 @@ int main()
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
 				ImGui::ColorEdit3("light color", (float*)&lightColor);
 				ImGui::ColorEdit3("obj color", (float*)&cubeColor);
-				ImGui::SliderFloat3("light positin", (float*)&lightPos, -5.0f, 5.0f);
-				ImGui::SliderFloat("Ambient strength", (float*)&ambientStrength, 0.0f, 1.0f);
-				ImGui::SliderFloat("specular strength", (float*)&specularStrength, 0.0f, 1.0f);
+				ImGui::InputFloat("shininess", (float*)&material.shininess);
+				ImGui::SliderFloat3("ambient", (float*)&material.ambient, 0.0f, 1.0f);
+				ImGui::SliderFloat3("specular", (float*)&material.specular, 0.0f, 1.0f);
+				ImGui::SliderFloat3("diffuse", (float*)&material.diffuse, 0.0f, 1.0f);
+				ImGui::SliderFloat3("light positin", (float*)&light.position, -5.0f, 5.0f);
 				ImGui::End();
 			}
 
