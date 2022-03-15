@@ -146,6 +146,9 @@ int main()
 		Texture texture1("res/images/container2_specular.png", 1);
 		texture1.Bind(1);
 
+		Texture texture2("res/images/matrix.jpg", 2);
+		texture2.Bind(2);
+
 		//设置顶点缓冲对象
 		VertexBuffer cubeVBO(vertices, sizeof(vertices));
 		cubeVAO.AddBuffer(cubeVBO, cubeLayout);
@@ -224,8 +227,11 @@ int main()
 				cubeProgram.SetMat4f("projection", projection);
 				cubeProgram.SetMat4f("view", view);
 				cubeProgram.SetVec3("u_objColor", cubeColor.x, cubeColor.y, cubeColor.z);
+				cubeProgram.SetInt("u_material.emission", 2);
 				cubeProgram.SetInt("u_material.specular", 1);
 				cubeProgram.SetFloat("u_material.shininess", material.shininess);
+				cubeProgram.SetFloat("u_matrixLight", (1.0f + (float)sin(glfwGetTime())) / 2.0f + 0.5f);
+				cubeProgram.SetFloat("u_matrixYMove", (float)glfwGetTime());
 				cubeProgram.SetInt("u_material.diffuse", 0);
 				cubeProgram.SetVec3("u_light.position", light.position.x, light.position.y, light.position.z);
 				cubeProgram.SetVec3("u_light.ambient", light.ambient.x, light.ambient.y, light.ambient.z);

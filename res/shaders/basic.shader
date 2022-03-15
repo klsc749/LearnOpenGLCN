@@ -25,6 +25,7 @@ void main()
 #version 330 core
 
 struct Material {
+	sampler2D emission;
 	sampler2D diffuse;
 	sampler2D specular;
 	float shininess;
@@ -51,6 +52,9 @@ uniform Light u_light;
 uniform vec3 u_viewPos;
 uniform vec3 u_objColor;
 
+uniform float u_matrixLight;
+uniform float u_matrixYMove;
+
 void main()
 {
 	// ambient
@@ -68,7 +72,10 @@ void main()
 	float spec = pow(max(dot(viewDir, reflectDir), 0), u_material.shininess);
 	vec3 specular = vec3(texture(u_material.specular, texCoords)) * spec * u_light.specular;
 
-	vec3 res = (ambient+ diffuse + specular)  * u_objColor;
+	//emission
+	vec3 emission = u_matrixLight * vec3(texture(u_material.emission, vec2(texCoords.x, texCoords.y + u_matrixYMove))).rgb;
+
+	vec3 res = (ambient+ diffuse + specular + emission)  * u_objColor;
 
 	FragColor = vec4(res, 1.0);
 }
