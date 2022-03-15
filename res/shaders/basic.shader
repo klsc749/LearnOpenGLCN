@@ -37,6 +37,10 @@ struct Light {
 	vec3 ambient;
 	vec3 diffuse;
 	vec3 specular;
+
+	float constant;
+	float linear;
+	float quadratic;
 };
 
 in vec3 normal;
@@ -52,11 +56,16 @@ uniform Light u_light;
 uniform vec3 u_viewPos;
 uniform vec3 u_objColor;
 
-uniform float u_matrixLight;
-uniform float u_matrixYMove;
+//uniform float u_matrixLight;
+//uniform float u_matrixYMove;
 
 void main()
 {
+	//attenuation
+	float distance = length(u_light.position - fragPos);
+	float attenuation = 1.0 / (u_light.constant + u_light.linear *
+		distance + u_light.quadratic * distance * distance);
+
 	// ambient
 	vec3 ambient = vec3(texture(u_material.diffuse, texCoords)) * u_light.ambient;
 
@@ -73,9 +82,9 @@ void main()
 	vec3 specular = vec3(texture(u_material.specular, texCoords)) * spec * u_light.specular;
 
 	//emission
-	vec3 emission = u_matrixLight * vec3(texture(u_material.emission, vec2(texCoords.x, texCoords.y + u_matrixYMove))).rgb;
+	//vec3 emission = u_matrixLight * vec3(texture(u_material.emission, vec2(texCoords.x, texCoords.y + u_matrixYMove))).rgb;
 
-	vec3 res = (ambient+ diffuse + specular + emission)  * u_objColor;
+	vec3 res = (ambient+ diffuse + specular) * attenuation * u_objColor;
 
 	FragColor = vec4(res, 1.0);
 }

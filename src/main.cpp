@@ -127,6 +127,18 @@ int main()
 		1, 2, 3
 	};
 
+	glm::vec3 cubePositions[] = {
+	glm::vec3(0.0f,  0.0f,  0.0f),
+	glm::vec3(2.0f,  5.0f, -15.0f),
+	glm::vec3(-1.5f, -2.2f, -2.5f),
+	glm::vec3(-3.8f, -2.0f, -12.3f),
+	glm::vec3(2.4f, -0.4f, -3.5f),
+	glm::vec3(-1.7f,  3.0f, -7.5f),
+	glm::vec3(1.3f, -2.0f, -2.5f),
+	glm::vec3(1.5f,  2.0f, -2.5f),
+	glm::vec3(1.5f,  0.2f, -1.5f),
+	glm::vec3(-1.3f,  1.0f, -1.5f)
+	};
 		
 	{
 		GLCall(glEnable(GL_BLEND));
@@ -145,9 +157,6 @@ int main()
 
 		Texture texture1("res/images/container2_specular.png", 1);
 		texture1.Bind(1);
-
-		Texture texture2("res/images/matrix.jpg", 2);
-		texture2.Bind(2);
 
 		//设置顶点缓冲对象
 		VertexBuffer cubeVBO(vertices, sizeof(vertices));
@@ -223,15 +232,14 @@ int main()
 
 				cubeProgram.Bind();
 
-				cubeProgram.SetMat4f("model", model);
 				cubeProgram.SetMat4f("projection", projection);
 				cubeProgram.SetMat4f("view", view);
 				cubeProgram.SetVec3("u_objColor", cubeColor.x, cubeColor.y, cubeColor.z);
-				cubeProgram.SetInt("u_material.emission", 2);
-				cubeProgram.SetInt("u_material.specular", 1);
 				cubeProgram.SetFloat("u_material.shininess", material.shininess);
-				cubeProgram.SetFloat("u_matrixLight", (1.0f + (float)sin(glfwGetTime())) / 2.0f + 0.5f);
-				cubeProgram.SetFloat("u_matrixYMove", (float)glfwGetTime());
+				cubeProgram.SetFloat("u_light.constant", 1.0f);
+				cubeProgram.SetFloat("u_light.linear", 0.09f);
+				cubeProgram.SetFloat("u_light.quadratic", 0.032f);
+				cubeProgram.SetInt("u_material.specular", 1);
 				cubeProgram.SetInt("u_material.diffuse", 0);
 				cubeProgram.SetVec3("u_light.position", light.position.x, light.position.y, light.position.z);
 				cubeProgram.SetVec3("u_light.ambient", light.ambient.x, light.ambient.y, light.ambient.z);
@@ -240,6 +248,18 @@ int main()
 				cubeProgram.SetVec3("u_viewPos", camera.Position.x, camera.Position.y, camera.Position.z);
 
 				cubeVAO.Bind();
+
+				for (unsigned int i = 0; i < 10; i++)
+				{
+					glm::mat4 model;
+					model = glm::translate(model, cubePositions[i]);
+					float angle = 20.0f * i;
+					model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+					cubeProgram.SetMat4f("model", model);
+
+					glDrawArrays(GL_TRIANGLES, 0, 36);
+				}
+
 				glDrawArrays(GL_TRIANGLES, 0, 36);
 				cubeVAO.UnBind();
 
