@@ -162,6 +162,7 @@
     <ClCompile Include="src\ImageReader\stb_image.cpp" />
     <ClCompile Include="src\shaderToolCLass\Camera.cpp" />
     <ClCompile Include="src\shaderToolCLass\IndexBuffer.cpp" />
+    <ClCompile Include="src\shaderToolCLass\Light.cpp" />
     <ClCompile Include="src\shaderToolCLass\Renderer.cpp" />
     <ClCompile Include="src\shaderToolCLass\Shader.cpp" />
     <ClCompile Include="src\shaderToolCLass\Texture.cpp" />
@@ -180,6 +181,7 @@
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="src\shaderToolCLass\Camera.h" />
     <ClInclude Include="src\shaderToolCLass\IndexBuffer.h" />
+    <ClInclude Include="src\shaderToolCLass\Light.h" />
     <ClInclude Include="src\shaderToolCLass\Renderer.h" />
     <ClInclude Include="src\shaderToolCLass\shader.h" />
     <ClInclude Include="src\ImageReader\stb_image.h" />

@@ -24,9 +24,9 @@ public :
 
 	void SetFloat(const std::string& name, float value);
 
-	void SetVec3(const std::string& name, float x, float y, float z);
+	void SetVec3(const std::string& name, const glm::vec3& vec3);
 
-	void SetMat4f(const std::string& name, glm::mat4& mat4);
+	void SetMat4f(const std::string& name, const glm::mat4& mat4);
 	 
 private:
 	struct _ShaderProgramSource
