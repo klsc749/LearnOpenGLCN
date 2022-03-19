@@ -66,6 +66,12 @@
     <ClCompile Include="src\shaderToolCLass\Light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\shaderToolCLass\Mesh.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="src\shaderToolCLass\Model.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shaderToolCLass\shader.h">
@@ -125,10 +131,17 @@
     <ClInclude Include="src\shaderToolCLass\Light.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaderToolCLass\Mesh.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shaderToolCLass\Model.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
     <None Include="res\shaders\light.shader" />
+    <None Include="res\shaders\cubeLit.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\container.jpg">

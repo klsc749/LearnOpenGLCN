@@ -8,7 +8,9 @@
 #include "../Dependencies/imgui/imgui.h"
 #include "../Dependencies//imgui/imgui_impl_glfw.h"
 #include "../Dependencies/imgui/imgui_impl_opengl3.h"
-
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 
 void PrcocessInput(GLFWwindow* window);
@@ -65,6 +67,9 @@ int main()
 		return -1;
 	}
 
+	Assimp::Importer importer;
+	const aiScene* scene = importer.ReadFile("path", aiProcess_Triangulate | aiProcess_FlipUVs);
+
 	float vertices[] = {
 		// positions          // normals           // texture coords
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
@@ -110,23 +115,6 @@ int main()
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
 	};
 
-	unsigned int indices[] = {
-		0, 1, 3,
-		1, 2, 3
-	};
-
-	glm::vec3 cubePositions[] = {
-	glm::vec3(0.0f,  0.0f,  0.0f),
-	glm::vec3(2.0f,  5.0f, -15.0f),
-	glm::vec3(-1.5f, -2.2f, -2.5f),
-	glm::vec3(-3.8f, -2.0f, -12.3f),
-	glm::vec3(2.4f, -0.4f, -3.5f),
-	glm::vec3(-1.7f,  3.0f, -7.5f),
-	glm::vec3(1.3f, -2.0f, -2.5f),
-	glm::vec3(1.5f,  2.0f, -2.5f),
-	glm::vec3(1.5f,  0.2f, -1.5f),
-	glm::vec3(-1.3f,  1.0f, -1.5f)
-	};
 
 	// positions of the point lights
 	glm::vec3 pointLightPositions[] = {
@@ -148,14 +136,6 @@ int main()
 		cubeLayout.Push<float>(2);
 
 		//设置纹理
-		Texture texture("res/images/container2.png", 0);
-		texture.Bind(0);
-
-		Texture texture1("res/images/container2_specular.png", 1);
-		texture1.Bind(1);
-
-		Texture texture2("res/images/datou.png", 2);
-		texture2.Bind(2);
 
 		//设置顶点缓冲对象
 		VertexBuffer cubeVBO(vertices, sizeof(vertices));
@@ -165,11 +145,6 @@ int main()
 		//设置着色器程序
 		Shader cubeProgram("res/shaders/basic.shader");
 
-
-		VertexArray lightVAO;
-		lightVAO.AddBuffer(cubeVBO, cubeLayout);
-
-		Shader lightShader("res/shaders/light.shader");
 
 		glEnable(GL_DEPTH_TEST);
 
@@ -189,19 +164,7 @@ int main()
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		glm::vec3 lightColor = glm::vec3(1.0f);
 
-		LightModel light;
-		light.AddDirLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f, 0.05f, 0.05f),
-			glm::vec3(0.4f, 0.4f, 0.4f), glm::vec3(0.5f, 0.5f, 0.5f));
-		light.AddPointLight(glm::vec3(-0.2f, -1.0f, -0.3f), glm::vec3(0.05f, 0.05f, 0.05f),
-			glm::vec3(0.8f, 0.8f, 0.8f), glm::vec3(1.0f, 1.0f, 1.0f),
-			1.0f, 0.09f, 0.032f);
-		light.AddSpotLight(camera.Position, glm::vec3(0.0f, 0.0f, 0.0f),
-			glm::vec3 (1.0f, 1.0f, 1.0f), glm::vec3(1.0f, 1.0f, 1.0f), camera.Front,
-			1.0f, 0.09f, 0.032f,
-			glm::cos(glm::radians(7.5f)), glm::cos(glm::radians(10.0f)));
-		light.AddMaterial(texture, texture1, 32.0f);
 
 		while (!glfwWindowShouldClose(window))
 		{
@@ -219,69 +182,6 @@ int main()
 				//处理输入
 				PrcocessInput(window);
 
-				//projection transformation
-				glm::mat4 projection = glm::mat4(1.0f);
-				projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
-				
-				// camera/view transformation
-				glm::mat4 view = camera.GetViewMatrix();
-				
-				//move transformation
-				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::rotate(model,glm::radians(float(45)), glm::vec3(0, 1.0f, 0.0f));
-
-
-				cubeProgram.Bind();
-				cubeProgram.SetInt("u_datou", 2);
-				cubeProgram.SetMat4f("projection", projection);
-				cubeProgram.SetMat4f("view", view);
-				cubeProgram.SetVec3("u_viewPos", camera.Position);
-				light.SetMaterial(cubeProgram, "u_material");
-				light.SetDirLight(cubeProgram, "u_dirLight");
-				light.spotLight.position = camera.Position;
-				light.spotLight.direction = camera.Front;
-				light.SetSpotLight(cubeProgram, "u_spotLight");
-				for (int i = 0; i < 4; i++)
-				{
-					light.pointLight.position = pointLightPositions[i];
-					light.SetPointLight(cubeProgram, "u_pointLights[" + std::to_string(i) + "]");
-				}
-				cubeVAO.Bind();
-
-				for (unsigned int i = 0; i < 10; i++)
-				{
-					glm::mat4 model;
-					model = glm::translate(model, cubePositions[i]);
-					float angle = 20.0f * i;
-					model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-					cubeProgram.SetMat4f("model", model);
-
-					glDrawArrays(GL_TRIANGLES, 0, 36);
-				}
-
-				glDrawArrays(GL_TRIANGLES, 0, 36);
-				cubeVAO.UnBind();
-
-
-				lightShader.Bind();
-				lightShader.SetMat4f("model", model);
-				lightShader.SetMat4f("projection", projection);
-				lightShader.SetMat4f("view", view);
-				lightShader.SetVec3("u_light", lightColor);
-
-
-				lightVAO.Bind();
-				for (unsigned int i = 0; i < 4; i++)
-				{
-					model = glm::mat4(1.0f);
-					model = glm::translate(model, pointLightPositions[i]);
-					model = glm::scale(model, glm::vec3(0.2f)); // Make it a smaller cube
-					lightShader.SetMat4f("model", model);
-					glDrawArrays(GL_TRIANGLES, 0, 36);
-				}
-
-				glDrawArrays(GL_TRIANGLES, 0, 36);
-				lightVAO.UnBind();
 			}
 
 			//imgui window
@@ -289,8 +189,6 @@ int main()
 
 				ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::ColorEdit3("light color", (float*)&lightColor);
-				ImGui::InputFloat("shininess", (float*)&light.material.shininess);
 				ImGui::End();
 			}
 
