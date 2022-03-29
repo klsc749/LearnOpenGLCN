@@ -1,6 +1,7 @@
 #include "Model.h"
+#include "../ImageReader/stb_image.h"
 
-Model::Model(char* path)
+Model::Model(const char* path)
 {
     loadModel(path);
 }
@@ -16,7 +17,11 @@ void Model::Draw(Shader& shader)
 void Model::loadModel(const std::string& path)
 {
     Assimp::Importer import;
-    const aiScene* scene = import.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+    const aiScene* scene = import.ReadFile(path,
+        aiProcess_CalcTangentSpace |
+        aiProcess_Triangulate |
+        aiProcess_JoinIdenticalVertices |
+        aiProcess_SortByPType);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
     {
@@ -126,4 +131,43 @@ Mesh Model::processMesh(aiMesh* mesh, const aiScene* scene)
     // return a mesh object created from the extracted mesh data
     return Mesh(vertices, indices, textures);
 
+}
+
+std::vector<Texture> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
+{
+    std::vector<Texture> textures;
+    for (unsigned int i = 0; i < mat->GetTextureCount(type); i++)
+    {
+        aiString str;
+        mat->GetTexture(type, i, &str);
+        // check if texture was loaded before and if so, continue to next iteration: skip loading a new texture
+        bool skip = false;
+        for (unsigned int j = 0; j < textures_loaded.size(); j++)
+        {
+            if (std::strcmp(textures_loaded[j].GetPath().data(), str.C_Str()) == 0)
+            {
+                textures.push_back(textures_loaded[j]);
+                skip = true; // a texture with the same filepath has already been loaded, continue to next one. (optimization)
+                break;
+            }
+        }
+        if (!skip)
+        {   // if texture hasn't been loaded already, load it
+            Texture texture(this->m_directory + '/' + std::string(str.C_Str()));
+            texture.SetTextureType(typeName);
+            textures.push_back(texture);
+            textures_loaded.push_back(texture);  // store it as texture loaded for entire model, to ensure we won't unnecesery load duplicate textures.
+        }
+    }
+    return textures;
+}
+
+Texture TextureFromFile(const char* path, const std::string& directory)
+{
+    std::string filename = std::string(path);
+    filename = directory + '/' + filename;
+
+    Texture texture(filename);
+
+    return texture;
 }

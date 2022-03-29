@@ -197,6 +197,7 @@
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
     <None Include="res\shaders\cubeLit.shader" />
+    <None Include="res\shaders\depthTest\cube.shader" />
     <None Include="res\shaders\light.shader" />
   </ItemGroup>
   <ItemGroup>

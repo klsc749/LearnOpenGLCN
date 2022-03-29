@@ -1,27 +1,10 @@
 #pragma once
 #include <string>
 #include <vector>
-#include <GL/glew.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "shader.h"
-
-struct Vertex
-{
-	glm::vec3 position;
-	glm::vec3 normal;
-	glm::vec2 texCoords;
-	// tangent
-	glm::vec3 tangent;
-	// bitangent
-	glm::vec3 bitangent;
-};
-
-struct Texture
-{
-	unsigned int id;
-	std::string type;
-};
+#include "Renderer.h"
+#include "VertexBufferLayout.h"
 
 
 class Mesh
@@ -32,10 +15,14 @@ public:
 	std::vector<unsigned int> indices;
 	std::vector<Texture> textures;
 private:
-	unsigned int m_VAO, m_VBO, m_EBO;
+	VertexBuffer m_VBO;
+	VertexBufferLayout m_vertexLayout;
+	IndexBuffer m_IBO;
+	VertexArray m_VAO;
 public:
 	//º¯Êý
 	Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures);
+	~Mesh();
 	void Draw(Shader& shader);
 private:
 	void SetUpMesh();

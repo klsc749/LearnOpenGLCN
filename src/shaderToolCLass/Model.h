@@ -6,12 +6,15 @@
 #include "shader.h"
 #include "Mesh.h"
 
-
+Texture TextureFromFile(const char* path, const std::string& directory);
 class Model
 {
 public:
+    // model data 
+    std::vector<Texture> textures_loaded;	// stores all the textures loaded so far, optimization to make sure textures aren't loaded more than once.
+    bool gammaCorrection;
     /*  函数   */
-    Model(char* path);
+    Model(const char* path);
     void Draw(Shader& shader);
 private:
     /*  模型数据  */
