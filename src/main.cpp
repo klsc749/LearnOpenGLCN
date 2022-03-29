@@ -139,7 +139,9 @@ int main()
 
 
 		glEnable(GL_DEPTH_TEST);
-
+		glEnable(GL_STENCIL_TEST);
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -156,18 +158,29 @@ int main()
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		VertexArray va;
-		VertexBufferLayout layout;
-		layout.Push<float>(2);
+		//cube
+		VertexArray cubeVAO;
+		VertexBuffer cubeVBO(cubeVertices, sizeof(cubeVertices));
+		VertexBufferLayout cubeLayout;
+		cubeLayout.Push<float>(3);
+		cubeLayout.Push<float>(2);
+		cubeVAO.AddBuffer(cubeVBO, cubeLayout);
 
-		VertexBuffer vb(position, 8 * sizeof(float));
+		//plane
+		VertexArray planeVAO;
+		VertexBuffer planeVBO(planeVertices, sizeof(cubeVertices));
+		VertexBufferLayout planeLayout;
+		planeLayout.Push<float>(3);
+		planeLayout.Push<float>(2);
+		planeVAO.AddBuffer(planeVBO, planeLayout);
 
-		va.AddBuffer(vb, layout);
+		//cubeTexture
+		Texture cubeTexture("res/images/marble.jpg");
+		//planeTexture
+		Texture planeTexture("res/images/metal.png");
 
-		IndexBuffer ib(indices, 6);
-
-		Shader shader("res/shaders/Basic.shader");
-		shader.Bind();
+		Shader shader("res/shaders/depthTest/cube.shader");
+		Shader singleColor("res/shaders/depthTest/singleColor.shader");
 
 		Renderer renderer;
 
@@ -182,31 +195,62 @@ int main()
 			{
 				//清理缓冲区
 				glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
-				//SHADER.BIND();
-				//GLM::MAT4 PROJECTION = GLM::PERSPECTIVE(GLM::RADIANS(CAMERA.ZOOM), (FLOAT)SCR_WIDTH / (FLOAT)SCR_HEIGHT, 0.1F, 100.0F);
-				//GLM::MAT4 VIEW = CAMERA.GETVIEWMATRIX();
-				//SHADER.SETMAT4F("PROJECTION", PROJECTION);
-				//SHADER.SETMAT4F("VIEW", VIEW);
-
-				//GLM::MAT4 MODEL = GLM::MAT4(1.0);
-				//MODEL = GLM::TRANSLATE(MODEL, GLM::VEC3(0.0F, 0.0F, 0.0F)); // TRANSLATE IT DOWN SO IT'S AT THE CENTER OF THE SCENE
-				//MODEL = GLM::SCALE(MODEL, GLM::VEC3(1.0F, 1.0F, 1.0F));	// IT'S A BIT TOO BIG FOR OUR SCENE, SO SCALE IT DOWN
-				//SHADER.SETMAT4F("MODEL", MODEL);
-
-				shader.Bind();
+				//set shader parameters
 				glm::mat4 pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
 				glm::mat4 view = camera.GetViewMatrix();
+
+				shader.Bind();
 				glm::mat4 model = glm::mat4(1.0f);
-				model = glm::translate(model, glm::vec3(0.0f, 0.5f, 0.0f));
-				model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
-				
-				shader.SetMat4f("u_model", model);
 				shader.SetMat4f("u_view", view);
 				shader.SetMat4f("u_pro", pro);
-				renderer.Draw(va, ib, shader);
+				shader.SetInt("texture1", 0);
 
+				glStencilMask(0x00);
+				//draw plane
+				planeTexture.Bind();
+				shader.Bind();
+				shader.SetMat4f("u_model", glm::mat4(1.0f));
+				renderer.Draw(planeVAO, 6, shader);
+
+				glStencilFunc(GL_ALWAYS, 1, 0xFF);
+				glStencilMask(0xFF);
+				//bind texture
+				cubeTexture.Bind();
+				shader.SetMat4f("u_model", model);
+				renderer.Draw(cubeVAO, 36, shader);
+				
+
+				shader.Bind();
+				glm::mat4 model1 = glm::mat4(1.0f);
+				model1 = glm::translate(model1, glm::vec3(1.0f, 0.0f, 1.0f));
+				shader.SetMat4f("u_model", model1);
+				renderer.Draw(cubeVAO, 36, shader);
+
+				glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+				glStencilMask(0x00);
+				glDisable(GL_DEPTH_TEST);
+
+				singleColor.Bind();
+				singleColor.SetMat4f("pro", pro);
+				singleColor.SetMat4f("view", view);
+				glm::vec3 scale = glm::vec3(1.2f);
+				glm::mat4 model2 = glm::mat4(1.0f);
+				model2 = glm::translate(model2, glm::vec3(0.0f, 0.0f, 0.0f));
+				model2 = glm::scale(model2, scale);
+				singleColor.SetMat4f("model", model2);
+				renderer.Draw(cubeVAO, 36, singleColor);
+				singleColor.Bind();
+				model2 = glm::mat4(1.0f);
+				model2 = glm::translate(model2, glm::vec3(1.0f, 0.0f, 1.0f));
+				model2 = glm::scale(model2, scale);
+				singleColor.SetMat4f("model", model2);
+				renderer.Draw(cubeVAO, 36, singleColor);
+
+				glStencilMask(0xFF);
+				glStencilFunc(GL_ALWAYS, 0, 0xFF);
+				glEnable(GL_DEPTH_TEST);
 				//处理输入
 				PrcocessInput(window);
 
