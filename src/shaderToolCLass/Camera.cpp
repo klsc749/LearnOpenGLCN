@@ -84,6 +84,7 @@ void Camera::UpdateTime(float currentTime)
 
 void Camera::UpdateView(float xPos, float yPos)
 {
+    //TODO:ÐÞ¸Ä¾µÍ·×ª»»
     if (enable)
     {
         float xoffset = xPos - m_lastX;

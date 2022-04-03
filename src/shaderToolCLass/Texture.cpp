@@ -54,7 +54,7 @@ Texture::Texture(const std::string& filePath)
 }
 Texture::~Texture()
 {
-	//GLCall(glDeleteTextures(1, &m_RendererID));
+	GLCall(glDeleteTextures(1, &m_RendererID));
 }
 
 /// <summary>

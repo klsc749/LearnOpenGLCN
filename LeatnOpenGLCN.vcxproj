@@ -161,6 +161,7 @@
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\ImageReader\stb_image.cpp" />
     <ClCompile Include="src\shaderToolCLass\Camera.cpp" />
+    <ClCompile Include="src\shaderToolCLass\CubeMap.cpp" />
     <ClCompile Include="src\shaderToolCLass\IndexBuffer.cpp" />
     <ClCompile Include="src\shaderToolCLass\Light.cpp" />
     <ClCompile Include="src\shaderToolCLass\Mesh.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
     <ClInclude Include="src\shaderToolCLass\Camera.h" />
+    <ClInclude Include="src\shaderToolCLass\CubeMap.h" />
     <ClInclude Include="src\shaderToolCLass\IndexBuffer.h" />
     <ClInclude Include="src\shaderToolCLass\Light.h" />
     <ClInclude Include="src\shaderToolCLass\Mesh.h" />
@@ -198,11 +200,15 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
+    <None Include="res\shaders\cube.shader" />
     <None Include="res\shaders\cubeLit.shader" />
     <None Include="res\shaders\depthTest\cube.shader" />
     <None Include="res\shaders\depthTest\singleColor.shader" />
+    <None Include="res\shaders\EnvironmentMapping\reflection.shader" />
+    <None Include="res\shaders\EnvironmentMapping\refract.shader" />
     <None Include="res\shaders\light.shader" />
     <None Include="res\shaders\screen.shader" />
+    <None Include="res\shaders\skybox.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\1.jpg" />

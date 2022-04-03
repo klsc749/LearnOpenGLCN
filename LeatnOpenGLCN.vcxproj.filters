@@ -75,6 +75,9 @@
     <ClCompile Include="src\shaderToolCLass\UniformManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="src\shaderToolCLass\CubeMap.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\shaderToolCLass\shader.h">
@@ -143,6 +146,9 @@
     <ClInclude Include="src\shaderToolCLass\UniformManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="src\shaderToolCLass\CubeMap.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
@@ -151,6 +157,10 @@
     <None Include="res\shaders\depthTest\cube.shader" />
     <None Include="res\shaders\depthTest\singleColor.shader" />
     <None Include="res\shaders\screen.shader" />
+    <None Include="res\shaders\cube.shader" />
+    <None Include="res\shaders\skybox.shader" />
+    <None Include="res\shaders\EnvironmentMapping\reflection.shader" />
+    <None Include="res\shaders\EnvironmentMapping\refract.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\container.jpg">
