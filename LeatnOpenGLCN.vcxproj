@@ -170,6 +170,7 @@
     <ClCompile Include="src\shaderToolCLass\Texture.cpp" />
     <ClCompile Include="src\shaderToolCLass\VertexArray.cpp" />
     <ClCompile Include="src\shaderToolCLass\VertexBuffer.cpp" />
+    <ClCompile Include="src\shaderToolCLass\UniformManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\imgui\imconfig.h" />
@@ -190,6 +191,7 @@
     <ClInclude Include="src\shaderToolCLass\shader.h" />
     <ClInclude Include="src\ImageReader\stb_image.h" />
     <ClInclude Include="src\shaderToolCLass\Texture.h" />
+    <ClInclude Include="src\shaderToolCLass\UniformManager.h" />
     <ClInclude Include="src\shaderToolCLass\VertexArray.h" />
     <ClInclude Include="src\shaderToolCLass\VertexBuffer.h" />
     <ClInclude Include="src\shaderToolCLass\VertexBufferLayout.h" />

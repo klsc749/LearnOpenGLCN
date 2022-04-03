@@ -34,7 +34,10 @@ public:
 
     bool enable = false;
 private:
-
+    float m_lastTime;
+    float m_deltaTime;
+    float m_lastX = 400;
+    float m_lastY = 300;
 public:
     // constructor with vectors
     Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH);
@@ -49,12 +52,15 @@ public:
     }
 
     // processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(CameraMovement direction, float deltaTime);
+    void ProcessKeyboard(CameraMovement direction);
 
     void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
 
     // processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
     void ProcessMouseScroll(float yoffset);
+
+    void UpdateTime(float currentTime);
+    void UpdateView(float xPos, float yPos);
 
 private:
     // calculates the front vector from the Camera's (updated) Euler Angles
