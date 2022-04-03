@@ -133,15 +133,23 @@ int main()
 		 5.0f, -0.5f, -5.0f,  2.0f, 2.0f
 	};
 
+	float quadVertices[] = {
+		// positions   // texCoords
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f, -1.0f,  0.0f, 0.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+
+		-1.0f,  1.0f,  0.0f, 1.0f,
+		 1.0f, -1.0f,  1.0f, 0.0f,
+		 1.0f,  1.0f,  1.0f, 1.0f
+	};
+
 	{
 		GLCall(glEnable(GL_BLEND));
 		GLCall(glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA))
 
 
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_STENCIL_TEST);
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
@@ -157,6 +165,14 @@ int main()
 		// Setup Platform/Renderer backends
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
+
+		//screen
+		VertexArray screenVAO;
+		VertexBuffer screenVBO(quadVertices, sizeof(cubeVertices));
+		VertexBufferLayout screenLayout;
+		screenLayout.Push<float>(2);
+		screenLayout.Push<float>(2);
+		screenVAO.AddBuffer(screenVBO, screenLayout);
 
 		//cube
 		VertexArray cubeVAO;
@@ -180,7 +196,30 @@ int main()
 		Texture planeTexture("res/images/metal.png");
 
 		Shader shader("res/shaders/depthTest/cube.shader");
-		Shader singleColor("res/shaders/depthTest/singleColor.shader");
+		Shader screenShader("res/shaders/screen.shader");
+		//frame buffer
+		unsigned int frameBuffer;
+		glGenFramebuffers(1, &frameBuffer);
+		glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+
+		unsigned int textureBuffer;
+		glGenTextures(1, &textureBuffer);
+		glBindTexture(GL_TEXTURE_2D, textureBuffer);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 800, 600, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureBuffer, 0);
+
+		unsigned int rbo;
+		glGenRenderbuffers(1, &rbo);
+		glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+		glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, 800, 600);
+
+		glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, rbo);
+		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+			std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 		Renderer renderer;
 
@@ -193,13 +232,16 @@ int main()
 
 			//opengl use
 			{
-				//清理缓冲区
-				glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+				
 
 				//set shader parameters
 				glm::mat4 pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
 				glm::mat4 view = camera.GetViewMatrix();
+
+				glBindFramebuffer(GL_FRAMEBUFFER, frameBuffer);
+				glEnable(GL_DEPTH_TEST);
+				glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // 我们现在不使用模板缓冲
 
 				shader.Bind();
 				glm::mat4 model = glm::mat4(1.0f);
@@ -207,17 +249,15 @@ int main()
 				shader.SetMat4f("u_pro", pro);
 				shader.SetInt("texture1", 0);
 
-				glStencilMask(0x00);
 				//draw plane
 				planeTexture.Bind();
 				shader.Bind();
 				shader.SetMat4f("u_model", glm::mat4(1.0f));
 				renderer.Draw(planeVAO, 6, shader);
 
-				glStencilFunc(GL_ALWAYS, 1, 0xFF);
-				glStencilMask(0xFF);
 				//bind texture
 				cubeTexture.Bind();
+				shader.Bind();
 				shader.SetMat4f("u_model", model);
 				renderer.Draw(cubeVAO, 36, shader);
 				
@@ -228,29 +268,17 @@ int main()
 				shader.SetMat4f("u_model", model1);
 				renderer.Draw(cubeVAO, 36, shader);
 
-				glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-				glStencilMask(0x00);
+				glBindFramebuffer(GL_FRAMEBUFFER, 0); 
+				glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+				glClear(GL_COLOR_BUFFER_BIT);
+
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, textureBuffer);
+				screenShader.Bind();
+				screenShader.SetInt("screenTexture", 0);
 				glDisable(GL_DEPTH_TEST);
+				renderer.Draw(screenVAO, 6, screenShader);
 
-				singleColor.Bind();
-				singleColor.SetMat4f("pro", pro);
-				singleColor.SetMat4f("view", view);
-				glm::vec3 scale = glm::vec3(1.2f);
-				glm::mat4 model2 = glm::mat4(1.0f);
-				model2 = glm::translate(model2, glm::vec3(0.0f, 0.0f, 0.0f));
-				model2 = glm::scale(model2, scale);
-				singleColor.SetMat4f("model", model2);
-				renderer.Draw(cubeVAO, 36, singleColor);
-				singleColor.Bind();
-				model2 = glm::mat4(1.0f);
-				model2 = glm::translate(model2, glm::vec3(1.0f, 0.0f, 1.0f));
-				model2 = glm::scale(model2, scale);
-				singleColor.SetMat4f("model", model2);
-				renderer.Draw(cubeVAO, 36, singleColor);
-
-				glStencilMask(0xFF);
-				glStencilFunc(GL_ALWAYS, 0, 0xFF);
-				glEnable(GL_DEPTH_TEST);
 				//处理输入
 				PrcocessInput(window);
 

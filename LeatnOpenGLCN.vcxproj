@@ -200,6 +200,7 @@
     <None Include="res\shaders\depthTest\cube.shader" />
     <None Include="res\shaders\depthTest\singleColor.shader" />
     <None Include="res\shaders\light.shader" />
+    <None Include="res\shaders\screen.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\1.jpg" />
