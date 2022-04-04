@@ -1,6 +1,6 @@
 #include "Renderer.h"
 #include "Texture.h"
-#include "../ImageReader/stb_image.h"
+#include "../tools/ImageReader/stb_image.h"
 
 #define PNG 4
 #define JPG 3

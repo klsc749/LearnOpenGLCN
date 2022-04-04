@@ -6,7 +6,6 @@
 #include "shader.h"
 #include "Mesh.h"
 
-Texture TextureFromFile(const char* path, const std::string& directory);
 class Model
 {
 public:

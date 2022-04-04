@@ -1,5 +1,4 @@
-#include "Model.h"
-#include "../ImageReader/stb_image.h"
+#include "ModelLoader.h"
 
 Model::Model(const char* path)
 {
@@ -170,14 +169,4 @@ std::vector<Texture*> Model::loadMaterialTextures(aiMaterial* mat, aiTextureType
         }
     }
     return textures;
-}
-
-Texture TextureFromFile(const char* path, const std::string& directory)
-{
-    std::string filename = std::string(path);
-    filename = directory + '/' + filename;
-
-    Texture texture(filename);
-
-    return texture;
 }

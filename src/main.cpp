@@ -1,16 +1,15 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include "../Dependencies/glm/gtc/type_ptr.hpp"
-#include "shaderToolCLass/Renderer.h"
-#include "shaderToolCLass/VertexBufferLayout.h"
-#include "shaderToolCLass/Camera.h"
-#include "shaderToolCLass/Light.h"
+#include "Renderer.h"
+#include "VertexBufferLayout.h"
+#include "Camera.h"
 #include "../Dependencies/imgui/imgui.h"
 #include "../Dependencies//imgui/imgui_impl_glfw.h"
 #include "../Dependencies/imgui/imgui_impl_opengl3.h"
-#include "shaderToolCLass/UniformManager.h"
-#include "shaderToolCLass/CubeMap.h"
-#include "shaderToolCLass/Model.h"
+#include "UniformManager.h"
+#include "CubeMap.h"
+#include "tools/ModelLoader/ModelLoader.h"
 
 
 void PrcocessInput(GLFWwindow* window);

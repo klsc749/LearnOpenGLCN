@@ -18,28 +18,28 @@
     <ClCompile Include="src\main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\ImageReader\stb_image.cpp">
+    <ClCompile Include="src\tools\ImageReader\stb_image.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Shader.cpp">
+    <ClCompile Include="src\core\Shader.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Renderer.cpp">
+    <ClCompile Include="src\core\Renderer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\VertexBuffer.cpp">
+    <ClCompile Include="src\core\VertexBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\VertexArray.cpp">
+    <ClCompile Include="src\core\VertexArray.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\IndexBuffer.cpp">
+    <ClCompile Include="src\core\IndexBuffer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Texture.cpp">
+    <ClCompile Include="src\core\Texture.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Camera.cpp">
+    <ClCompile Include="src\core\Camera.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Dependencies\imgui\imgui.cpp">
@@ -63,48 +63,48 @@
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Light.cpp">
+    <ClCompile Include="src\core\Light.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Mesh.cpp">
+    <ClCompile Include="src\tools\ModelLoader\Mesh.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\Model.cpp">
+    <ClCompile Include="src\tools\ModelLoader\ModeLoaderl.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\UniformManager.cpp">
+    <ClCompile Include="src\core\UniformManager.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="src\shaderToolCLass\CubeMap.cpp">
+    <ClCompile Include="src\core\CubeMap.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\shaderToolCLass\shader.h">
+    <ClInclude Include="src\core\shader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\ImageReader\stb_image.h">
+    <ClInclude Include="src\tools\ImageReader\stb_image.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\Renderer.h">
+    <ClInclude Include="src\core\Renderer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\VertexBuffer.h">
+    <ClInclude Include="src\core\VertexBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\VertexBufferLayout.h">
+    <ClInclude Include="src\core\VertexBufferLayout.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\VertexArray.h">
+    <ClInclude Include="src\core\VertexArray.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\IndexBuffer.h">
+    <ClInclude Include="src\core\IndexBuffer.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\Texture.h">
+    <ClInclude Include="src\core\Texture.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\Camera.h">
+    <ClInclude Include="src\core\Camera.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Dependencies\imgui\imconfig.h">
@@ -134,19 +134,19 @@
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\Light.h">
+    <ClInclude Include="src\core\Light.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\Mesh.h">
+    <ClInclude Include="src\tools\ModelLoader\Mesh.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\Model.h">
+    <ClInclude Include="src\tools\ModelLoader\ModelLoader.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\UniformManager.h">
+    <ClInclude Include="src\core\UniformManager.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="src\shaderToolCLass\CubeMap.h">
+    <ClInclude Include="src\core\CubeMap.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

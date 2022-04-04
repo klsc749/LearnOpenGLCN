@@ -1,5 +1,5 @@
 #include "CubeMap.h"
-#include "../ImageReader/stb_image.h"
+#include "../tools/ImageReader/stb_image.h"
 #include <iostream>
 #include "Renderer.h"
 

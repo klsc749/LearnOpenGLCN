@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;$(SolutionDir)src/core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -105,7 +105,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;$(SolutionDir)src/core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;$(SolutionDir)src/core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)Dependencies\GLFW\include;$(SolutionDir)Dependencies\GLEW\include;$(SolutionDir)Dependencies\Assimp\include;$(SolutionDir)Dependencies;$(SolutionDir)src/core;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -159,19 +159,19 @@
     <ClCompile Include="Dependencies\imgui\imgui_tables.cpp" />
     <ClCompile Include="Dependencies\imgui\imgui_widgets.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\ImageReader\stb_image.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Camera.cpp" />
-    <ClCompile Include="src\shaderToolCLass\CubeMap.cpp" />
-    <ClCompile Include="src\shaderToolCLass\IndexBuffer.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Light.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Mesh.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Model.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Renderer.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Shader.cpp" />
-    <ClCompile Include="src\shaderToolCLass\Texture.cpp" />
-    <ClCompile Include="src\shaderToolCLass\VertexArray.cpp" />
-    <ClCompile Include="src\shaderToolCLass\VertexBuffer.cpp" />
-    <ClCompile Include="src\shaderToolCLass\UniformManager.cpp" />
+    <ClCompile Include="src\tools\ImageReader\stb_image.cpp" />
+    <ClCompile Include="src\core\Camera.cpp" />
+    <ClCompile Include="src\core\CubeMap.cpp" />
+    <ClCompile Include="src\core\IndexBuffer.cpp" />
+    <ClCompile Include="src\core\Light.cpp" />
+    <ClCompile Include="src\tools\ModelLoader\Mesh.cpp" />
+    <ClCompile Include="src\tools\ModelLoader\ModeLoaderl.cpp" />
+    <ClCompile Include="src\core\Renderer.cpp" />
+    <ClCompile Include="src\core\Shader.cpp" />
+    <ClCompile Include="src\core\Texture.cpp" />
+    <ClCompile Include="src\core\VertexArray.cpp" />
+    <ClCompile Include="src\core\VertexBuffer.cpp" />
+    <ClCompile Include="src\core\UniformManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\imgui\imconfig.h" />
@@ -183,20 +183,20 @@
     <ClInclude Include="Dependencies\imgui\imstb_rectpack.h" />
     <ClInclude Include="Dependencies\imgui\imstb_textedit.h" />
     <ClInclude Include="Dependencies\imgui\imstb_truetype.h" />
-    <ClInclude Include="src\shaderToolCLass\Camera.h" />
-    <ClInclude Include="src\shaderToolCLass\CubeMap.h" />
-    <ClInclude Include="src\shaderToolCLass\IndexBuffer.h" />
-    <ClInclude Include="src\shaderToolCLass\Light.h" />
-    <ClInclude Include="src\shaderToolCLass\Mesh.h" />
-    <ClInclude Include="src\shaderToolCLass\Model.h" />
-    <ClInclude Include="src\shaderToolCLass\Renderer.h" />
-    <ClInclude Include="src\shaderToolCLass\shader.h" />
-    <ClInclude Include="src\ImageReader\stb_image.h" />
-    <ClInclude Include="src\shaderToolCLass\Texture.h" />
-    <ClInclude Include="src\shaderToolCLass\UniformManager.h" />
-    <ClInclude Include="src\shaderToolCLass\VertexArray.h" />
-    <ClInclude Include="src\shaderToolCLass\VertexBuffer.h" />
-    <ClInclude Include="src\shaderToolCLass\VertexBufferLayout.h" />
+    <ClInclude Include="src\core\Camera.h" />
+    <ClInclude Include="src\core\CubeMap.h" />
+    <ClInclude Include="src\core\IndexBuffer.h" />
+    <ClInclude Include="src\core\Light.h" />
+    <ClInclude Include="src\tools\ModelLoader\Mesh.h" />
+    <ClInclude Include="src\tools\ModelLoader\ModelLoader.h" />
+    <ClInclude Include="src\core\Renderer.h" />
+    <ClInclude Include="src\core\shader.h" />
+    <ClInclude Include="src\tools\ImageReader\stb_image.h" />
+    <ClInclude Include="src\core\Texture.h" />
+    <ClInclude Include="src\core\UniformManager.h" />
+    <ClInclude Include="src\core\VertexArray.h" />
+    <ClInclude Include="src\core\VertexBuffer.h" />
+    <ClInclude Include="src\core\VertexBufferLayout.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="res\shaders\basic.shader" />
