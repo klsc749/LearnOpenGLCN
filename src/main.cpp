@@ -167,7 +167,7 @@ int main()
 		VertexArray skyboxVAO;
 		skyboxVAO.AddBuffer(skyboxVBO, skyboxLayout);
 		Shader skyboxShader("res/shaders/skybox.shader");
-		CubeMap skybox("res/images/skybox", { "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "front.jpg", "back.jpg" });
+		CubeMap skybox("res/images/skybox", { "right.jpg", "left.jpg", "top.jpg", "bottom.jpg",  "back.jpg", "front.jpg" });
 
 		VertexArray cubeVAO;
 		VertexBuffer cubeVBO(vertices, sizeof(vertices));
@@ -202,7 +202,7 @@ int main()
 			/*********Render**********/
 			view = camera.GetViewMatrix();
 			pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
-			model = glm::rotate(model, glm::radians((sin((float)glfwGetTime() + 1) / 2.0f)), glm::vec3(0.0f, 1.0f, 0.0f));
+			model = glm::rotate(model, glm::radians((sin((float)glfwGetTime() + 1) / 2.0f)), glm::vec3(0.5f, 1.0f, 0.5f));
 			uniformMan.SetUniforms(cubeShader, cubeNames);
 
 			view = glm::mat4(glm::mat3(view));

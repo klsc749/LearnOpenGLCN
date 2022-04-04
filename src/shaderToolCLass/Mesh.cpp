@@ -49,8 +49,4 @@ void Mesh::Draw(Shader& shader)
 
 Mesh::~Mesh()
 {
-    //delete m_VBO;
-    //delete m_IBO;
-    //delete m_vertexLayout;
-    //delete m_VAO;
 }

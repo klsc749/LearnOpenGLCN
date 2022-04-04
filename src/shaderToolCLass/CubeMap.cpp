@@ -13,7 +13,10 @@ CubeMap::CubeMap(const std::string& path, const std::vector<std::string>& faces)
 	}
 	GLCall(glGenTextures(1, &m_ID));
 	GLCall(glBindTexture(GL_TEXTURE_CUBE_MAP, m_ID));
+
 	int width, height, nrChannels;
+	stbi_set_flip_vertically_on_load(false);
+
 	for (int i = 0; i < 6; i++)
 	{
 		unsigned char* data = stbi_load(m_faces[i].c_str(), &width, &height, &nrChannels, 0);

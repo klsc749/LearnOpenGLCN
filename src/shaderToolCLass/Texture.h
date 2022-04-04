@@ -24,3 +24,4 @@ public:
 	inline unsigned int GetTextureID() const { return m_RendererID;}
 	inline std::string GetPath() const { return m_FilePath; }
 };
+
