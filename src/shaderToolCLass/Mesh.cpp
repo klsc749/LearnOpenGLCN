@@ -1,6 +1,12 @@
 #include "Mesh.h"
 
-Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture>& textures)
+/// <summary>
+/// 初始化顶点，索引，纹理数据
+/// </summary>
+/// <param name="vertices"></param>
+/// <param name="indices"></param>
+/// <param name="textures"></param>
+Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>& indices, const std::vector<Texture*>& textures)
 {
     this->vertices = vertices;
     this->indices = indices;
@@ -8,6 +14,9 @@ Mesh::Mesh(const std::vector<Vertex>& vertices, const std::vector<unsigned int>&
 	SetUpMesh();
 }
 
+/// <summary>
+/// 设置缓冲
+/// </summary>
 void Mesh::SetUpMesh()
 {
     m_vertexLayout.Push<float>(3);
@@ -21,6 +30,10 @@ void Mesh::SetUpMesh()
     m_VAO.AddBuffer(m_VBO, m_vertexLayout);
 }
 
+/// <summary>
+/// 绘制面
+/// </summary>
+/// <param name="shader"></param>
 void Mesh::Draw(Shader& shader)
 {
     unsigned int diffuseNr = 1;
@@ -29,18 +42,17 @@ void Mesh::Draw(Shader& shader)
     for (unsigned int i = 0; i < textures.size(); i++)
     {
         std::string number;
-        std::string name = textures[i].GetTextureType();
+        std::string name = textures[i]->GetTextureType();
         if (name == "texture_diffuse")
             number = std::to_string(diffuseNr++);
         else if (name == "texture_specular")
             number = std::to_string(specularNr++);
 
-        //shader.SetFloat((name + number).c_str(), i);
-        
+        shader.SetFloat((name + number).c_str(), i);
+       
 
-        textures[i].Bind(i);
+        textures[i]->Bind(i);
     }
-    glActiveTexture(GL_TEXTURE0);
 
     //绘制网格
     Renderer renderer;
@@ -49,4 +61,8 @@ void Mesh::Draw(Shader& shader)
 
 Mesh::~Mesh()
 {
+    for (unsigned int i = 0; i < textures.size(); i++)
+    {
+        delete textures[i];
+    }
 }

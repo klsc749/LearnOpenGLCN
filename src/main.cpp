@@ -10,6 +10,7 @@
 #include "../Dependencies/imgui/imgui_impl_opengl3.h"
 #include "shaderToolCLass/UniformManager.h"
 #include "shaderToolCLass/CubeMap.h"
+#include "shaderToolCLass/Model.h"
 
 
 void PrcocessInput(GLFWwindow* window);
@@ -26,6 +27,8 @@ Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
 
 int main()
 {
+
+
 	GLFWwindow* window;
 
 	if (!glfwInit())
@@ -57,92 +60,15 @@ int main()
 	}
 
 	float vertices[] = {
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	 0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-	-0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	 0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-	-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+		0.5f, 0.5f,
+		-0.5f, -0.5f,
+		0.5f, -0.5f,
+		-0.5f, 0.5f
 	};
-
-	float skyboxVertices[] = {
-		// positions          
-		-1.0f,  1.0f, -1.0f,
-		-1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-
-		-1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f, -1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-
-		-1.0f, -1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f,
-		-1.0f, -1.0f,  1.0f,
-
-		-1.0f,  1.0f, -1.0f,
-		 1.0f,  1.0f, -1.0f,
-		 1.0f,  1.0f,  1.0f,
-		 1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f,  1.0f,
-		-1.0f,  1.0f, -1.0f,
-
-		-1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f, -1.0f,
-		 1.0f, -1.0f, -1.0f,
-		-1.0f, -1.0f,  1.0f,
-		 1.0f, -1.0f,  1.0f
+	
+	unsigned int indices[] = {
+		0, 1, 2,
+		1, 2, 3
 	};
 
 	{
@@ -161,62 +87,40 @@ int main()
 		ImGui_ImplGlfw_InitForOpenGL(window, true);
 		ImGui_ImplOpenGL3_Init(glsl_version);
 
-		VertexBuffer skyboxVBO(skyboxVertices, sizeof(skyboxVertices));
-		VertexBufferLayout  skyboxLayout;
-		skyboxLayout.Push<float>(3);
-		VertexArray skyboxVAO;
-		skyboxVAO.AddBuffer(skyboxVBO, skyboxLayout);
-		Shader skyboxShader("res/shaders/skybox.shader");
-		CubeMap skybox("res/images/skybox", { "right.jpg", "left.jpg", "top.jpg", "bottom.jpg",  "back.jpg", "front.jpg" });
 
-		VertexArray cubeVAO;
-		VertexBuffer cubeVBO(vertices, sizeof(vertices));
-		VertexBufferLayout layout;
-		layout.Push<float>(3);
-		layout.Push<float>(3);
-		cubeVAO.AddBuffer(cubeVBO, layout);
-		Shader cubeShader("res/shaders/EnvironmentMapping/refract.shader");
+		glEnable(GL_DEPTH_TEST);
 
-		Renderer renderer;
-
-		glm::vec3 color = glm::vec3(1.0f);
+		Model newmodel("res/models/nanosuit/nanosuit.obj");
+		Shader shader("res/shaders/model.shader");
 		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
 
+		unsigned int a = 0;
+
 		UniformManager uniformMan;
-		uniformMan.Push("u_color", {UniformType::VEC3, &color});
-		uniformMan.Push("u_model", { UniformType::MAT4, &model });
-		uniformMan.Push("u_view", { UniformType::MAT4, &view });
-		uniformMan.Push("u_pro", { UniformType::MAT4, &pro });
-		uniformMan.Push("u_cameraPos", { UniformType::MAT4, &camera.Position});
+		uniformMan.Push("u_model", {UniformType::MAT4, &model});
+		uniformMan.Push("u_view", {UniformType::MAT4, &view});
+		uniformMan.Push("u_projection", {UniformType::MAT4, &pro});
 
-		std::vector<std::string> cubeNames = {"u_model", "u_view", "u_pro", "u_cameraPos"};
-		std::vector<std::string> skyboxNames = {"u_view", "u_pro"};
+		uniformMan.SetUniform(shader, "u_model");
 
-		glEnable(GL_DEPTH_TEST);
+		std::vector<std::string> names = { "u_view", "u_projection"};
+
+		Renderer renderer;
 
 		// Application loop
 		while (!glfwWindowShouldClose(window))
 		{
 			/*********Render**********/
+			renderer.Clear();
+			newmodel.Draw(shader);
+
 			view = camera.GetViewMatrix();
 			pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
-			model = glm::rotate(model, glm::radians((sin((float)glfwGetTime() + 1) / 2.0f)), glm::vec3(0.5f, 1.0f, 0.5f));
-			uniformMan.SetUniforms(cubeShader, cubeNames);
-
-			view = glm::mat4(glm::mat3(view));
-			uniformMan.SetUniforms(skyboxShader, skyboxNames);
-			
-
-			renderer.Clear();
-			skybox.Bind();
-
-			renderer.Draw(cubeVAO, 36, cubeShader);
-
-			glDepthFunc(GL_LEQUAL);
-			renderer.Draw(skyboxVAO, 36, skyboxShader);
-			glDepthFunc(GL_LESS);
+			uniformMan.SetUniforms(shader, names);
 
 			/*********Render**********/
 
@@ -230,7 +134,6 @@ int main()
 				
 				ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-				ImGui::ColorEdit3("TriagnleColor", (float*)&color);
 				ImGui::End();
 			}
 

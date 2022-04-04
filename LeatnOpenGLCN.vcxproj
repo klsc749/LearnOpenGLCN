@@ -207,6 +207,7 @@
     <None Include="res\shaders\EnvironmentMapping\reflection.shader" />
     <None Include="res\shaders\EnvironmentMapping\refract.shader" />
     <None Include="res\shaders\light.shader" />
+    <None Include="res\shaders\model.shader" />
     <None Include="res\shaders\screen.shader" />
     <None Include="res\shaders\skybox.shader" />
   </ItemGroup>
