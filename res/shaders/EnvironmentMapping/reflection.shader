@@ -8,11 +8,11 @@ out vec3 normal;
 
 uniform mat4 u_view;
 uniform mat4 u_model;
-uniform mat4 u_pro;
+uniform mat4 u_projection;
 
 void main()
 {
-	gl_Position = u_pro * u_view * u_model * vec4(aPos, 1.0);
+	gl_Position = u_projection * u_view * u_model * vec4(aPos, 1.0);
 	normal = mat3(transpose(inverse(u_model))) * aNormal;
 	position = vec3(u_model * vec4(aPos, 1.0));
 }
@@ -24,12 +24,12 @@ out vec4 FragColor;
 in vec3 position;
 in vec3 normal;
 
-uniform vec3 u_cameraPos;
+uniform vec3 u_viewPos;
 uniform samplerCube skybox;
 
 void main()
 {
-	vec3 I = normalize(position - u_cameraPos);
+	vec3 I = normalize(position - u_viewPos);
 	vec3 R = reflect(I, normalize(normal));
 	FragColor = vec4(texture(skybox, R).rgb, 1.0);
 }

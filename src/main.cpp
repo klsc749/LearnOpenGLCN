@@ -10,6 +10,7 @@
 #include "UniformManager.h"
 #include "CubeMap.h"
 #include "tools/ModelLoader/ModelLoader.h"
+#include "Light.h"
 
 
 void PrcocessInput(GLFWwindow* window);
@@ -58,23 +59,56 @@ int main()
 		return -1;
 	}
 
-	float vertices[] = {
-		0.5f, 0.5f,
-		-0.5f, -0.5f,
-		0.5f, -0.5f,
-		-0.5f, 0.5f
-	};
-	
-	unsigned int indices[] = {
-		0, 1, 2,
-		1, 2, 3
+	float skyboxVertices[] = {
+		// positions          
+		-1.0f,  1.0f, -1.0f,
+		-1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f, -1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+
+		-1.0f, -1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f,
+		-1.0f, -1.0f,  1.0f,
+
+		-1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f, -1.0f,
+		 1.0f,  1.0f,  1.0f,
+		 1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f,  1.0f,
+		-1.0f,  1.0f, -1.0f,
+
+		-1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f, -1.0f,
+		 1.0f, -1.0f, -1.0f,
+		-1.0f, -1.0f,  1.0f,
+		 1.0f, -1.0f,  1.0f
 	};
 
 	{
 		// Setup Dear ImGui context
 		IMGUI_CHECKVERSION();
 		ImGui::CreateContext();
-		ImGuiIO& io = ImGui::GetIO(); (void)io;
+		ImGuiIO& io = ImGui::GetIO();
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
 		//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
 
@@ -90,36 +124,83 @@ int main()
 		glEnable(GL_DEPTH_TEST);
 
 		Model newmodel("res/models/nanosuit/nanosuit.obj");
-		Shader shader("res/shaders/model.shader");
+		Shader shader("res/shaders/model/model.shader");
+		Shader refractShader("res/shaders/EnvironmentMapping/refract.shader");
+		Shader reflectShader("res/shaders/EnvironmentMapping/reflection.shader");
+
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::translate(model, glm::vec3(0.0f, -0.75f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+
+		glm::mat4 origionModel = glm::translate(model, glm::vec3(-5.0f, 0.0f, 0.0f));
+		glm::mat4 refractModel = glm::translate(model, glm::vec3(5.0f, 0.0f, 0.0f));
+		glm::mat4 reflectModel = glm::translate(model, glm::vec3(15.0f, 0.0f, 0.0f));
+
 		glm::mat4 view = camera.GetViewMatrix();
 		glm::mat4 pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
-
-		unsigned int a = 0;
+		DirLight dirLight;
+		glm::vec3 viewPos = camera.Position;
+		float ambient = 0.5f;
+		int shineness = 32;
 
 		UniformManager uniformMan;
 		uniformMan.Push("u_model", {UniformType::MAT4, &model});
 		uniformMan.Push("u_view", {UniformType::MAT4, &view});
 		uniformMan.Push("u_projection", {UniformType::MAT4, &pro});
+		uniformMan.Push("u_dirLight.direction", {UniformType::VEC3, &dirLight.direction});
+		uniformMan.Push("u_dirLight.ambient", {UniformType::VEC3, &dirLight.ambient});
+		uniformMan.Push("u_dirLight.diffuse", {UniformType::VEC3, &dirLight.diffuse});
+		uniformMan.Push("u_dirLight.specular", {UniformType::VEC3, &dirLight.specular});
+		uniformMan.Push("u_viewPos", {UniformType::VEC3, &viewPos});
+		uniformMan.Push("u_shineness", {UniformType::INT, &shineness});
 
 		uniformMan.SetUniform(shader, "u_model");
+		uniformMan.SetUniform(shader, "u_dirLight.ambient");
+		uniformMan.SetUniform(shader, "u_dirLight.diffuse");
+		uniformMan.SetUniform(shader, "u_dirLight.specular");
 
-		std::vector<std::string> names = { "u_view", "u_projection"};
+		std::vector<std::string> names = {"u_model", "u_view", "u_projection", "u_dirLight.direction", "u_viewPos", "u_dirLight.ambient"};
+		std::vector<std::string> refractNames = {"u_model", "u_view", "u_projection", "u_viewPos"};
+
+		VertexBuffer skyboxVBO(skyboxVertices, sizeof(skyboxVertices));
+		VertexBufferLayout  skyboxLayout;
+		skyboxLayout.Push<float>(3);
+		VertexArray skyboxVAO;
+		skyboxVAO.AddBuffer(skyboxVBO, skyboxLayout);
+		Shader skyboxShader("res/shaders/skybox.shader");
+		CubeMap skybox("res/images/skybox", { "right.jpg", "left.jpg", "top.jpg", "bottom.jpg", "back.jpg" ,"front.jpg" });
+		std::vector<std::string> skyboxNames = { "u_view", "u_projection" };
 
 		Renderer renderer;
 
 		// Application loop
 		while (!glfwWindowShouldClose(window))
 		{
-			/*********Render**********/
-			renderer.Clear();
-			newmodel.Draw(shader);
-
+			/**********Update data************/
 			view = camera.GetViewMatrix();
 			pro = glm::perspective(glm::radians(camera.Zoom), (float)(SCR_WIDTH) / (float)SCR_HEIGHT, 0.1f, 100.0f);
+			viewPos = camera.Position;
+			dirLight.ambient = glm::vec3(ambient);
+			model = origionModel;
 			uniformMan.SetUniforms(shader, names);
+			model = refractModel;
+			uniformMan.SetUniforms(refractShader, refractNames);
+			model = reflectModel;
+			uniformMan.SetUniforms(reflectShader, refractNames);
+			view = glm::mat4(glm::mat3(view));
+			uniformMan.SetUniforms(skyboxShader, skyboxNames);
+			
+			/*********Render**********/
+			renderer.Clear();
+
+			glDepthMask(GL_FALSE);
+			skybox.Bind();
+			renderer.Draw(skyboxVAO, 36, skyboxShader);
+			glDepthMask(GL_TRUE);
+
+			newmodel.Draw(shader);
+			newmodel.Draw(refractShader);
+			newmodel.Draw(reflectShader);
 
 			/*********Render**********/
 
@@ -131,8 +212,11 @@ int main()
 			//imgui window
 			{
 				
-				ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+				ImGui::Begin("Direction Light");                          // Create a window called "Hello, world!" and append into it.
 				ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
+				ImGui::SliderFloat3("lightDir", &dirLight.direction.x, -1.0f, 1.0f);
+				ImGui::SliderFloat("ambient", &ambient, 0.0, 1.0);
+				ImGui::SliderInt("shineness", &shineness, 0, 128);
 				ImGui::End();
 			}
 

@@ -19,7 +19,7 @@ struct LightBase
 };
 
 struct DirLight : LightBase{
-	glm::vec3 direction = glm::vec3(0.0f);
+	glm::vec3 direction = glm::vec3(0.5f);
 };
 
 struct PointLight : LightBase{

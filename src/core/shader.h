@@ -33,6 +33,7 @@ private:
 	{
 		std::string VertexShaderSource;
 		std::string FragmentShaderSource;
+		std::string GeometryShaderSource;
 	};
 
 	/// <summary>

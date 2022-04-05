@@ -11,15 +11,22 @@ Shader::Shader(const char* shaderPath)
 
 	unsigned int vertexShader = _CompileShader(GL_VERTEX_SHADER, shaderSource.VertexShaderSource);
 	unsigned int fragmentShader = _CompileShader(GL_FRAGMENT_SHADER, shaderSource.FragmentShaderSource);
+	unsigned int geometryShader = 0;
+	if(shaderSource.GeometryShaderSource.size() != 0)
+		geometryShader = _CompileShader(GL_GEOMETRY_SHADER, shaderSource.GeometryShaderSource);
 	unsigned int program = glCreateProgram();
 
 	glAttachShader(program, vertexShader);
 	glAttachShader(program, fragmentShader);
+	if (geometryShader != 0)
+		glAttachShader(program, geometryShader);
 	glLinkProgram(program);
 	glValidateProgram(program);
 
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
+	if (geometryShader != 0)
+		glDeleteShader(geometryShader);
 
 	m_id = program;
 }
@@ -78,9 +85,9 @@ Shader::_ShaderProgramSource Shader::ParseShader(const char* path)
 {
 	std::ifstream stream(path);
 	enum class ShaderType {
-		NONE = -1, VERTEX = 0, FRAGMENT = 1,
+		NONE = -1, VERTEX = 0, FRAGMENT = 1, GEOMETRY = 2
 	};
-	std::stringstream ss[2];
+	std::stringstream ss[3];
 
 	ShaderType type = ShaderType::NONE;
 	std::string line;
@@ -92,6 +99,8 @@ Shader::_ShaderProgramSource Shader::ParseShader(const char* path)
 				type = ShaderType::VERTEX;
 			else if (line.find("fragment") != std::string::npos)
 				type = ShaderType::FRAGMENT;
+			else if (line.find("geometry") != std::string::npos)
+				type = ShaderType::GEOMETRY;
 		}
 		else
 		{
@@ -107,9 +116,12 @@ Shader::_ShaderProgramSource Shader::ParseShader(const char* path)
 
 	std::cout << "The FragmentShader Source : " << std::endl;
 	std::cout << ss[1].str() << std::endl;
-	std::cout << "------------------------------" << std::endl;
 
-	return { ss[0].str(), ss[1].str() };
+	std::cout << "The Geometry Source : " << std::endl;
+	std::cout << ss[2].str() << std::endl;
+	std::cout << "-------------------------------------------" << std::endl;
+
+	return { ss[0].str(), ss[1].str(), ss[2].str() };
 }
 
 unsigned int Shader::_CompileShader(unsigned int shaderType, std::string source)

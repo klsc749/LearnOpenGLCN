@@ -161,7 +161,9 @@
     <None Include="res\shaders\skybox.shader" />
     <None Include="res\shaders\EnvironmentMapping\reflection.shader" />
     <None Include="res\shaders\EnvironmentMapping\refract.shader" />
-    <None Include="res\shaders\model.shader" />
+    <None Include="res\shaders\model\modelbasic.shader" />
+    <None Include="res\shaders\model\model.shader" />
+    <None Include="res\shaders\explode.shader" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="res\images\container.jpg">
